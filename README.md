@@ -3,6 +3,9 @@ Note-saving application I developed while learning Jetpack Compose and Clean Arc
 
 Source: Philipp Lackner
 
+# Apk File
+https://drive.google.com/file/d/1n0uyLEXeUcpq6B-gdB45JOxALYr11H-3/view?usp=sharing
+
 ## Tools Used in the Application
 
 <a href="https://kotlinlang.org/" rel="nofollow"><img alt="kotlin" src="https://upload.wikimedia.org/wikipedia/commons/7/74/Kotlin_Icon.png" width="40" style="max-width: 100%;">&nbsp;&nbsp;&nbsp;&nbsp;</a>
