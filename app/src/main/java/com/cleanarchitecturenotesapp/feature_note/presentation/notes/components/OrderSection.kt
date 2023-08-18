@@ -34,14 +34,17 @@ fun OrderSection(
 
         }
         Row(modifier = Modifier.fillMaxWidth()) {
-            DefaultRadioButton(text = "Normal Sırala", selected = noteOrderBy.orderType is OrderType.Descending, onSelect = {
-                onOrderChange(noteOrderBy.copy(OrderType.Descending))
-            })
 
+            DefaultRadioButton(text = "Normal Sırala",
+                selected = noteOrderBy.orderType is OrderType.Descending,
+                onSelect = {
+                    onOrderChange(noteOrderBy.copy(OrderType.Descending))
+                })
             Spacer(modifier = Modifier.width(8.dp))
             DefaultRadioButton(text = "Tersten Sırala", selected = noteOrderBy.orderType is OrderType.Ascending, onSelect = {
                 onOrderChange(noteOrderBy.copy(OrderType.Ascending))
             })
+
         }
     }
 }

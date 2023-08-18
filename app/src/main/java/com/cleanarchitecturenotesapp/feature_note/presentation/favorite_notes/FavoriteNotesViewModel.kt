@@ -1,4 +1,4 @@
-package com.cleanarchitecturenotesapp.feature_note.presentation.notes
+package com.cleanarchitecturenotesapp.feature_note.presentation.favorite_notes
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -8,7 +8,8 @@ import com.cleanarchitecturenotesapp.feature_note.domain.model.NoteModel
 import com.cleanarchitecturenotesapp.feature_note.domain.use_case.NoteUseCases
 import com.cleanarchitecturenotesapp.feature_note.domain.util.NoteOrderBy
 import com.cleanarchitecturenotesapp.feature_note.domain.util.OrderType
-import com.cleanarchitecturenotesapp.feature_note.presentation.favorite_notes.FavoriteNotesEvent
+import com.cleanarchitecturenotesapp.feature_note.presentation.notes.NotesEvent
+import com.cleanarchitecturenotesapp.feature_note.presentation.notes.NotesState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.launchIn
@@ -17,19 +18,15 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class NotesViewModel @Inject constructor(
+class FavoriteNotesViewModel @Inject constructor(
     private val noteUseCases: NoteUseCases,
 ) : ViewModel() {
-
     private val _state = mutableStateOf(NotesState())
     val state: State<NotesState> = _state
-
-    private var recentlyDeletedNoteModel: NoteModel? = null
-
-    private var getNotesJob: Job? = null
+    private var getFavoriteNotesJob: Job? = null
 
     init {
-        getNotes(NoteOrderBy.Date(OrderType.Descending))
+        getFavoriteNotes(NoteOrderBy.Date(OrderType.Descending))
     }
 
     fun onEvent(event: NotesEvent) {
@@ -38,31 +35,12 @@ class NotesViewModel @Inject constructor(
                 if (state.value.noteOrderBy == event.noteOrderBy && state.value.noteOrderBy.orderType == event.noteOrderBy.orderType) {
                     return
                 }
-                getNotes(event.noteOrderBy)
-            }
-            is NotesEvent.DeleteNote -> {
-                viewModelScope.launch {
-                    noteUseCases.deleteNote(event.noteModel)
-                    recentlyDeletedNoteModel = event.noteModel
-                }
-            }
-
-            is NotesEvent.RestoreNote -> {
-                viewModelScope.launch {
-                    noteUseCases.addNote(recentlyDeletedNoteModel ?: return@launch)
-                    recentlyDeletedNoteModel = null
-                }
-            }
-
-            is NotesEvent.ToggleOrderSection -> {
-                _state.value = state.value.copy(
-                    isOrderSelectionVisible = !state.value.isOrderSelectionVisible
-                )
+                getFavoriteNotes(event.noteOrderBy)
             }
 
             is NotesEvent.AddNoteToFavorites -> {
                 viewModelScope.launch {
-                    event.noteModel.id?.let { noteId->
+                    event.noteModel.id?.let { noteId ->
                         noteUseCases.addNoteToFavorites(noteId = noteId)
                     }
                     val updatedNote = event.noteModel.copy(isFavorite = true)
@@ -72,24 +50,42 @@ class NotesViewModel @Inject constructor(
 
             is NotesEvent.DeleteNoteFromFavorites -> {
                 viewModelScope.launch {
-                    event.noteModel.id?.let { noteId->
+                    event.noteModel.id?.let { noteId ->
                         noteUseCases.deleteNoteFromFavorites(noteId = noteId)
                     }
                     val updatedNote = event.noteModel.copy(isFavorite = false)
                     noteUseCases.addNote(updatedNote)
                 }
             }
+
+            is NotesEvent.ToggleOrderSection -> {
+                _state.value = state.value.copy(
+                    isOrderSelectionVisible = !state.value.isOrderSelectionVisible
+                )
+            }
+
+            else -> {}
         }
     }
 
-    private fun getNotes(noteOrderBy: NoteOrderBy) {
-        getNotesJob?.cancel()
-        getNotesJob = noteUseCases.getNotes(noteOrderBy).onEach { notes ->
-                _state.value = state.value.copy(
-                    notes = notes,
-                    noteOrderBy = noteOrderBy,
-                )
-            }.launchIn(viewModelScope)
+    private fun getFavoriteNotes(noteOrderBy: NoteOrderBy) {
+        getFavoriteNotesJob?.cancel()
+        getFavoriteNotesJob = noteUseCases.getFavoriteNotesUseCase().onEach { favoriteNotes ->
+            val favoriteNoteIds = favoriteNotes.map { it.noteId }
+
+            viewModelScope.launch {
+                val notes = mutableListOf<NoteModel>()
+                noteUseCases.getNotesByIdList(noteIds = favoriteNoteIds, noteOrderBy = noteOrderBy)
+                    .collect { noteList ->
+                        notes.clear()
+                        notes.addAll(noteList)
+                        _state.value = state.value.copy(
+                            notes = notes,
+                            noteOrderBy = noteOrderBy,
+                        )
+                    }
+            }
+        }.launchIn(viewModelScope)
     }
 
 }

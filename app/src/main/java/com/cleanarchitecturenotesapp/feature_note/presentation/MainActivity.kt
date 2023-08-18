@@ -11,6 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.cleanarchitecturenotesapp.feature_note.presentation.add_edit_note.AddEditNoteScreen
+import com.cleanarchitecturenotesapp.feature_note.presentation.favorite_notes.FavoriteNotesScreen
 import com.cleanarchitecturenotesapp.feature_note.presentation.notes.NotesScreen
 import com.cleanarchitecturenotesapp.feature_note.presentation.util.Screen
 import com.cleanarchitecturenotesapp.ui.theme.CleanArchitectureNotesAppTheme
@@ -30,6 +31,10 @@ class MainActivity : ComponentActivity() {
                     ) {
                         composable(route = Screen.NotesScreen.route) {
                             NotesScreen(navController = navController)
+                        }
+
+                        composable(route = Screen.FavoriteNotesScreen.route){
+                            FavoriteNotesScreen(navController = navController)
                         }
 
                         composable(

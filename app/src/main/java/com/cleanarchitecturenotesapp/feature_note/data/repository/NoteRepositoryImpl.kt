@@ -16,6 +16,10 @@ class NoteRepositoryImpl(
         return dao.getNoteById(id)
     }
 
+    override fun getNotesByIdList(noteIds: List<Int>): Flow<List<NoteModel>>{
+        return dao.getNotesByIdList(noteIds = noteIds)
+    }
+
     override suspend fun insertNote(noteModel: NoteModel) = dao.insertNote(noteModel)
 
     override suspend fun deleteNote(noteModel: NoteModel) = dao.deleteNote(noteModel)

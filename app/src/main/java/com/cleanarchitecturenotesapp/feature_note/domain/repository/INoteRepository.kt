@@ -9,7 +9,10 @@ interface INoteRepository {
 
     suspend fun getNoteById(id: Int): NoteModel?
 
+    fun getNotesByIdList(noteIds: List<Int>): Flow<List<NoteModel>>
+
     suspend fun insertNote(noteModel: NoteModel)
 
     suspend fun deleteNote(noteModel: NoteModel)
+
 }

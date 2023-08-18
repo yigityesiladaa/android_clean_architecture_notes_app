@@ -1,14 +1,18 @@
 package com.cleanarchitecturenotesapp.feature_note.presentation.notes.components
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -34,6 +38,7 @@ fun NoteItem(
     modifier: Modifier = Modifier,
     cornerRadius: Dp = 10.dp,
     cutCornerSize: Dp = 30.dp,
+    onAddDeleteFavoriteClick: () -> Unit,
     onDeleteClick: () -> Unit,
 ) {
     Box(modifier = modifier) {
@@ -47,9 +52,7 @@ fun NoteItem(
             }
             clipPath(clipPath) {
                 drawRoundRect(
-                    color = Color(note.color),
-                    size = size,
-                    cornerRadius = CornerRadius(cornerRadius.toPx())
+                    color = Color(note.color), size = size, cornerRadius = CornerRadius(cornerRadius.toPx())
                 )
                 drawRoundRect(
                     color = Color(ColorUtils.blendARGB(note.color, 0x000000, 0.2f)),
@@ -63,7 +66,7 @@ fun NoteItem(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp)
-                .padding(end = 32.dp),
+                .padding(end = 32.dp)
         ) {
             Text(
                 text = note.title,
@@ -74,6 +77,7 @@ fun NoteItem(
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
+                modifier = Modifier.padding(end = 48.dp),
                 text = note.content,
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.surface,
@@ -81,15 +85,30 @@ fun NoteItem(
                 overflow = TextOverflow.Ellipsis
             )
         }
-        IconButton(
-            onClick = onDeleteClick,
-            modifier = Modifier.align(Alignment.BottomEnd)
+        Row(
+            modifier = Modifier.matchParentSize(),
+            horizontalArrangement = Arrangement.End,
+            verticalAlignment = Alignment.Bottom,
         ) {
-            Icon(
-                imageVector = Icons.Default.Delete,
-                contentDescription = "Notu Sil",
-                tint = MaterialTheme.colorScheme.errorContainer
-            )
+            IconButton(
+                onClick = onAddDeleteFavoriteClick, modifier = Modifier.padding(vertical = 8.dp)
+            ) {
+                Icon(
+                    imageVector = if (note.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                    contentDescription = if (note.isFavorite) "Favoriden Çıkar" else "Favori Ekle",
+                    tint = MaterialTheme.colorScheme.errorContainer
+                )
+            }
+
+            IconButton(
+                onClick = onDeleteClick, modifier = Modifier.padding(vertical = 8.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = "Notu Sil",
+                    tint = MaterialTheme.colorScheme.errorContainer
+                )
+            }
         }
     }
 }

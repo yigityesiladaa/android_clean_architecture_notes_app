@@ -1,10 +1,5 @@
-package com.cleanarchitecturenotesapp.feature_note.presentation.notes
+package com.cleanarchitecturenotesapp.feature_note.presentation.favorite_notes
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,10 +12,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Sort
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -41,33 +34,21 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.cleanarchitecturenotesapp.feature_note.presentation.components.NoteList
 import com.cleanarchitecturenotesapp.feature_note.presentation.components.SortFields
-import com.cleanarchitecturenotesapp.feature_note.presentation.favorite_notes.FavoriteNotesEvent
+import com.cleanarchitecturenotesapp.feature_note.presentation.notes.NotesEvent
 import com.cleanarchitecturenotesapp.feature_note.presentation.notes.components.NoteItem
-import com.cleanarchitecturenotesapp.feature_note.presentation.notes.components.OrderSection
 import com.cleanarchitecturenotesapp.feature_note.presentation.util.Screen
 import kotlinx.coroutines.launch
 
 @Composable
-fun NotesScreen(
-    navController: NavController, viewModel: NotesViewModel = hiltViewModel()
+fun FavoriteNotesScreen(
+    navController: NavController, viewModel: FavoriteNotesViewModel = hiltViewModel()
 ) {
     val state = viewModel.state.value
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
+    val favoriteNotes = state.notes.filter { it.isFavorite }
 
-    Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = {
-                    navController.navigate(Screen.AddEditNoteScreen.route)
-                },
-                containerColor = MaterialTheme.colorScheme.primary,
-            ) {
-                Icon(imageVector = Icons.Default.Add, contentDescription = "Not Ekle")
-            }
-        },
-    ) {
+    Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }) {
         it.calculateTopPadding()
         Column(
             modifier = Modifier
@@ -79,22 +60,21 @@ fun NotesScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
+                IconButton(onClick = { navController.popBackStack() }) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack, tint = Color.White, contentDescription = "Sırala"
+                    )
+                }
                 Text(
-                    text = "Notlar", style = MaterialTheme.typography.headlineMedium
+                    text = "Favoriler", style = MaterialTheme.typography.headlineMedium
                 )
-                Row {
-                    IconButton(onClick = { navController.navigate(Screen.FavoriteNotesScreen.route) }) {
-                        Icon(
-                            imageVector = Icons.Default.Favorite, tint = Color.White, contentDescription = "Favoriler"
-                        )
-                    }
-                    IconButton(onClick = { viewModel.onEvent(NotesEvent.ToggleOrderSection) }) {
-                        Icon(
-                            imageVector = Icons.Default.Sort, contentDescription = "Sırala"
-                        )
-                    }
+                IconButton(onClick = { viewModel.onEvent(NotesEvent.ToggleOrderSection) }) {
+                    Icon(
+                        imageVector = Icons.Default.Sort, contentDescription = "Sırala"
+                    )
                 }
             }
+
             SortFields(
                 visible = state.isOrderSelectionVisible,
                 noteOrderBy = state.noteOrderBy,
@@ -106,7 +86,7 @@ fun NotesScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             NoteList(
-                notes = state.notes,
+                notes = favoriteNotes,
                 navController = navController,
                 onDeleteClick = { note ->
                     viewModel.onEvent(NotesEvent.DeleteNote(note))

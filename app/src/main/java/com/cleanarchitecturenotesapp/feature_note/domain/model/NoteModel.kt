@@ -15,6 +15,7 @@ data class NoteModel(
     val content: String,
     val timeStamp: Long,
     val color: Int,
+    val isFavorite: Boolean = false,
 ) {
     companion object {
         val noteColors = listOf(RedOrange, LightGreen, Violet, BabyBlue, RedPink)
