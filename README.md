@@ -8,9 +8,9 @@ https://drive.google.com/file/d/1Inl_t3hkNXLIRca2vy6fLjeytIUDf2dz/view?usp=shari
 
 ## Tools Used in the Application
 
-<a href="https://kotlinlang.org/" rel="nofollow"><img alt="kotlin" src="https://upload.wikimedia.org/wikipedia/commons/7/74/Kotlin_Icon.png" width="40" style="max-width: 100%;">&nbsp;&nbsp;&nbsp;&nbsp;</a>
-<a href="https://developer.android.com/studio" rel="nofollow"><img alt="android_studio" src="https://github.com/yyigityesiladaa/yyigityesiladaa/blob/main/database_and_tool_icons/android_studio.svg" width="40" style="max-width: 100%;">&nbsp;&nbsp;&nbsp;&nbsp;</a>
-<a href="https://developer.android.com/jetpack/compose" rel="nofollow"><img alt="jetpack_compose" src="https://tabris.com/wp-content/uploads/2021/06/jetpack-compose-icon_RGB.png" width="55" height="55" style="max-width: 40%;"></a>
+<a href="https://kotlinlang.org/" rel="nofollow"><img alt="kotlin" src="https://upload.wikimedia.org/wikipedia/commons/7/74/Kotlin_Icon.png" width="40" style="max-width: 100%;"></a>
+<a href="https://developer.android.com/studio" rel="nofollow"><img alt="android_studio" src="https://github.com/yyigityesiladaa/yyigityesiladaa/blob/main/database_and_tool_icons/android_studio.svg" width="40" style="max-width: 100%;"></a>
+<a href="https://developer.android.com/jetpack/compose" rel="nofollow"><img alt="jetpack_compose" src="https://tabris.com/wp-content/uploads/2021/06/jetpack-compose-icon_RGB.png" width="50" style="max-width: 40%;"></a>
 
 ### Features Used in the Application:
                     
